@@ -1,6 +1,5 @@
-# Your Private Key for the wallet that owns the Drainer Contract
-# Keep this secret!
+# Copy this to .env and fill in your values
+CONTRACT_ADDRESS=0xYourDeployedContractAddress
+RPC_URL=https://mainnet.base.org
 PRIVATE_KEY=0xYourPrivateKeyHere
-
-# Port the server will listen on
 PORT=3000
